@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>ToDo</title>
+  <!-- normalize.css読み込み -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <!-- google font 読み込み(Nunito Sans) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <!-- 自分のCSS読み込み -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- vue3.0の読み込み -->
+  <script src="https://unpkg.com/vue@3.0.0/dist/vue.global.js"></script>
+</head>
+<body>
+  <!-- vue管理領域 -->
+  <div id="app">
+    <div class="heading-container">
+      <h1 class="heading-item">ToDo App</h1>
+      <div class="time-item">{{dateFormatText}}</div>
+    </div>
+    <div class="new-todo">
+      <!-- タイトル入力欄 -->
+      <div class="new-todo-item new-todo-title">
+        <label for="new-todo-title">タイトル</label>
+        <!-- v-modelで状態管理、.trim修飾子で入力された前後の余白を削除 -->
+        <input v-model.trim="todoTitle" type="text" id="new-todo-title" form="form-todo" />
+      </div>
+      <!-- 説明入力欄 -->
+      <div class="new-todo-item">
+        <label for="new-todo-description">説明</label>
+        <!-- v-modelで状態管理、.trim修飾子で入力された前後の余白を削除 -->
+        <textarea v-model.trim="todoDescription" id="new-todo-description" form="form-todo"></textarea>
+      </div>
+      <!-- カテゴリリスト表示領域 -->
+      <div class="new-todo-category">
+        カテゴリ
+        <ul>
+          <li v-for="category in categories" :key="category" class="new-todo-category-list">
+            <label :for="'category-' + category" class="new-todo-category-list-label">
+              <input v-model="todoCategories" type="checkbox" :id="'category-' + category" :value="category"
+                form="form-todo" />
+              {{ category }}
+            </label>
+          </li>
+        </ul>
+        <!-- カテゴリ作成領域 -->
+        <!-- v-onディレクティブでsubmitイベントと紐づけてcreateCategoryメソッドの呼び出し -->
+        <!-- .prevent修飾子でsubmitの初期動作を無効か -->
+        <form @submit.prevent="createCategory">
+          <!-- v-modelで状態管理、.trim修飾子で入力された前後の余白を削除 -->
+          <input v-model.trim="categoryName" type="text" class="categoryName" />
+          <button type="submit" :disabled="!canCreateCategory">作成</button>
+        </form>
+      </div>
+      <!-- todo作成ボタン領域 -->
+      <div class="new-todo-action">
+        <form id="form-todo" @submit.prevent="createTodo">
+          <button type="submit" :disabled="!canCreateTodo">作成</button>
+        </form>
+      </div>
+    </div>
+    <div>
+      <div class="todo-search">
+        <div class="todo-search-item">
+          <label for="todo-search-category" class="todo-category-label">カテゴリでフィルタ</label>
+          <select v-model="selectedCategory" id="todo-search-category">
+            <option value="">指定なし</option>
+            <option v-for="category in categories" :key="category" :value="category">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+        <!-- 終了したものを非表示にする領域 -->
+        <div class="todo-search-item todo-search-item-done">
+          <label for="todo-search-done" class="todo-done-label">終了したものを非表示にする</label>
+          <input v-model="hideDoneTodo" type="checkbox" id="todo-search-done" />
+        </div>
+        <!-- 並び替えセレクトボックス領域 -->
+        <div class="todo-search-item">
+          <!--  v-modelで状態管理 -->
+          <select v-model="order">
+            <option value="desc">作成日が新しいタスク順(降順)</option>
+            <option value="asc">作成日が古いタスク順(昇順)</option>
+          </select>
+        </div>
+        <!-- 検索キーワード入力領域 -->
+        <div class="todo-search-item todo-search-item-label">
+          <label for="todo-search-keyword">キーワードで検索</label>
+          <!-- v-modelで状態管理、.trim修飾子で入力された前後の余白を削除 -->
+          <input v-model.trim="searchWord" type="text" id="todo-search-keyword" />
+        </div>
+      </div>
+      <!-- todo表示領域 -->
+      <!-- todosの要素数が0より大きいなら表示 -->
+      <ul v-if="hasTodos" class="todo-list">
+        <li v-for="(todo, index) in resultTodos" :key="todo.id" class="todo-item">
+          <!-- リストタグの中の処理 -->
+          <div class="todo-item-done">
+            <input v-model="todo.done" type="checkbox" />
+          </div>
+          <div class="todo-item-content">
+            <div class="todo-item-date">
+              <!-- Dateオブジェクト作成後、そのアイテムの作成時のdatoTimeをセットして文字列に変換 -->
+              {{ new Date(todo.dateTime).toString() }}
+            </div>
+            <h3 class="todo-item-title">{{ todo.title }}</h3>
+            <!-- todo.descriptionがあれば表示 -->
+            <div v-if="todo.description" class="todo-item-description">
+              {{ todo.description }}
+            </div>
+            <ul class="todo-item-categories" v-if="todo.categories.length > 0">
+              <li v-for="category in todo.categories" :key="category" class="todo-item-category">
+                {{ category }}
+              </li>
+            </ul>
+            <!-- アイテム削除ボタンを作成予定 -->
+            <div class="todo-item-del">
+              <button @click="deleteItem(index)" type="button">削除</button>
+            </div>
+          </div>
+        </li>
+        <!-- リストタグの中の処理ここまで -->
+      </ul>
+      <!-- todosの要素数が0であれば下記メッセージを表示 -->
+      <p v-else class="unRegisteredMsg">ToDoタスクはまだ登録されていません</p>
+      <!-- todo表示領域ここまで -->
+    </div>
+  </div>
+  <!-- 自分用のJSファイル読み込み -->
+  <script src="app.js"></script>
+</body>
+</html>

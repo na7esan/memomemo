@@ -1,0 +1,180 @@
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  box-sizing: border-box;
+}
+
+.heading-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.heading-item{
+margin-left: 25px;
+}
+
+.time-item {
+    padding-top: 30px;
+    padding-right: 30px;
+}
+
+.new-todo {
+  border: 1px solid #ccc;
+  padding: 30px;
+}
+
+
+.new-todo-item + .new-todo-item {
+  margin-top: 15px;
+}
+
+.new-todo-item {
+  display: flex;
+
+}
+
+.new-todo-item > label {
+  flex-basis: 5em;
+}
+
+.new-todo-item > input[type='text'],
+.new-todo-item > textarea {
+  flex-grow: 1;
+  font-size: inherit;
+  border: 1px solid #ccc;
+  padding: 0.5em;
+}
+
+.new-todo-category {
+  margin-top: 20px;
+  background-color: #17f86228;
+  padding: 20px;
+}
+
+.new-todo-action {
+  margin-top: 20px;
+}
+
+.new-todo-action > form {
+  text-align: center;
+}
+
+.todo-search {
+  display: flex;
+  margin-top: 20px;
+}
+
+
+
+.todo-search-item + .todo-search-item {
+  border-left: 1px solid #ccc;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+.todo-search-item-done {
+  padding-top: 5px;
+  margin: 0;
+}
+.todo-search-item-label {
+  margin-right: 20px;
+}
+
+.todo-search-item-label>label {
+  margin-right: 20px;
+}
+
+.todo-list {
+  border: 1px solid #ccc;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.todo-item + .todo-item {
+  border-top: 1px solid #ccc;
+}
+
+.todo-item-content {
+  flex-grow: 1;
+  margin-left: 15px;
+}
+
+.todo-item-date {
+  font-size: 0.9em;
+}
+
+.todo-item-title {
+  margin: 0.3em 0;
+}
+
+.todo-item-description {
+  padding: 1em;
+}
+
+.todo-item-categories {
+  margin-top: 10px;
+}
+
+.categoryName{
+    margin-right: 20px;
+}
+
+
+.todo-category-label{
+  margin-right: 15px;
+  margin-left: 25px;
+}
+
+.todo-done-label{
+  margin-right: 15px;
+}
+
+.todo-search-item-label{
+    margin-right: 20px;
+}
+
+.todo-item-categories{
+  display: flex;
+  list-style-type: none;
+  margin-left: 0;
+  margin-bottom: 10px;
+  background-color: #17f86228;
+  padding: 10px;
+}
+.todo-item-categories>li{
+margin-right: 20px;
+}
+
+.todo-item-categories>li::before {
+    margin-right: 20px;
+    content:  ""; /* 空の要素作成 */
+    content:  "";     /* 空の要素作成 */
+    width:  10px;               /* 幅指定 */
+    height:  10px;              /* 高さ指定 */
+    display:  inline-block;     /* インラインブロックにする */
+    background-color: #228533;  /* 背景色指定 */
+    border-radius:  50%;        /* 要素を丸くする */
+}
+
+.new-todo-category>ul {
+list-style: none;
+display: flex;
+padding-left: 0px;
+}
+
+.new-todo-category>ul>li {
+margin-right: 20px;
+}
+
+.todo-item-del{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.unRegisteredMsg{
+  margin-top: 20px;
+  margin-left: 25px;
+}
